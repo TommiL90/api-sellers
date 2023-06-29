@@ -8,13 +8,15 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { MemoriesService } from './memories.service';
 import { CreateMemoryDto } from './dto/create-memory.dto';
 import { UpdateMemoryDto } from './dto/update-memory.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Memories')
 @Controller('memories')
@@ -47,11 +49,16 @@ export class MemoriesController {
     return this.memoriesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('upload/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateMemoryDto: UpdateMemoryDto) {
-    return this.memoriesService.update(id, updateMemoryDto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'coverImage', maxCount: 1 }]))
+  upload(
+    @UploadedFiles() files: { coverImage?: Express.Multer.File[] },
+    @Param('id') id: string,
+  ) {
+    const { coverImage } = files;
+    return this.memoriesService.upload(id, coverImage[0]);
   }
 
   @Delete(':id')
