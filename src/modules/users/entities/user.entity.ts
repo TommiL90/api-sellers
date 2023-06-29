@@ -5,6 +5,7 @@ export class User {
   readonly id: string;
   name: string;
   email: string;
+  isAdmin: boolean;
 
   @Exclude()
   password: string;
