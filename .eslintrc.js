@@ -24,3 +24,8 @@ module.exports = {
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
 };
+
+//AUTH
+// npm i @nestjs/passport passport passport-local @nestjs/jwt passport-jwt @nestjs/config
+// npm i -D @types/passport-local @types/passport-jwt
+
